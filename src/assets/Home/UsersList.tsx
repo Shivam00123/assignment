@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import { Users } from "@/data/user-data";
+import { fetchedUserInfo } from "@/redux/Users/actions";
 
 interface UserInfoProps {
   id: string;
@@ -31,6 +33,7 @@ const UserInfoContainer = ({ id, name, image }: UserInfoProps) => {
 const UsersList = () => {
   const [data, setData] = useState<any[]>([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchUserData();
@@ -44,6 +47,7 @@ const UsersList = () => {
   const getUserInfo = (e: any): void => {
     let userId = e.target.id;
     if (userId) {
+      dispatch(fetchedUserInfo(parseInt(userId)));
       navigate(`/user/${userId}`, {
         state: {
           userId,

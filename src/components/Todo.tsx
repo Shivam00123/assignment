@@ -3,12 +3,12 @@ import React from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
-const Posts = () => {
+const Todo = () => {
   return (
     <div className="w-screen h-screen flex items-center justify-center p-5 md:overflow-hidden">
       <div className="w-full h-full relative">
-        <Navbar title="Posts" />
         <Sidebar />
+        <Navbar title="Todo" />
         <Container>
           <div className="w-full h-full grid place-items-center">
             <h1 className="text-5xl text-textcolor font-extrabold opacity-70">
@@ -21,4 +21,4 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default Todo;

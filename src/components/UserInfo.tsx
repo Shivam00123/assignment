@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ImSad } from "react-icons/im";
 
 import useFetchUserInfo from "@/hooks/use-fetch-selected-user";
@@ -15,8 +15,8 @@ interface InfoPanelProps {
 
 const InfoPanel = ({ Key, value }: InfoPanelProps) => {
   return (
-    <div className="w-fit min-w-[50%] h-full flex items-center justify-center py-1">
-      <div className="w-full h-fit flex items-start text-textcolor  space-x-4 text-lg">
+    <div className="w-fit min-w-[50%] h-full flex items-center justify-center">
+      <div className="w-full h-fit flex items-start text-textcolor  space-x-4  text-base xl:text-lg sm:text-sm">
         <h1 className="opacity-75 whitespace-nowrap">{Key} : </h1>
         <h1 className="font-bold">{value}</h1>
       </div>
@@ -28,11 +28,16 @@ const UserInfo = () => {
   const params = useParams();
   const { fetchUserInfo } = useFetchUserInfo();
   const [userDetails, setUserDetails] = useState<any>({});
+  const navigate = useNavigate();
 
   useMemo(() => {
+    console.log({ id: params.id });
     if (params.id) {
       let userInfo = fetchUserInfo(parseInt(params.id));
       setUserDetails(userInfo ? userInfo : "not found");
+    } else {
+      console.log("yes");
+      navigate("/");
     }
   }, [params.id]);
 
@@ -45,10 +50,10 @@ const UserInfo = () => {
       ) : (
         <div className="w-full h-full relative">
           <Sidebar />
-          <Navbar userDetails={userDetails} />
+          <Navbar userDetails={userDetails} title="Profile" />
           <Container>
             <div className="w-full h-full md:flex items-center justify-center">
-              <div className="w-[45%] h-full flex flex-col items-center justify-evenly">
+              <div className="md:w-[45%] w-full h-full flex flex-col items-center justify-evenly">
                 <div className="w-1/2 h-fit flex flex-col items-center justify-center translate-x-[-10%]">
                   <div className="w-40 h-40 rounded-full overflow-hidden">
                     <img
@@ -79,8 +84,8 @@ const UserInfo = () => {
                   <InfoPanel Key="bs" value={userDetails?.company?.bs} />
                 </div>
               </div>
-              <div className="h-full w-[1px] bg-textcolor mt-5"></div>
-              <div className="w-[45%] h-full  flex flex-col items-start justify-start">
+              <div className="h-full w-[1px] bg-textcolor mt-5 md:block hidden"></div>
+              <div className="md:w-[45%] w-full h-full  flex flex-col md:items-start md:justify-start justify-center items-center">
                 <div className="w-full h-fit min-h-[30%] flex flex-col items-start px-10">
                   <h1 className="text-2xl text-textcolor">Address</h1>
                   <div className="w-1/2 h-fit flex flex-col ml-10">
@@ -99,14 +104,14 @@ const UserInfo = () => {
                     />
                   </div>
                 </div>
-                <div className="w-full h-1/2 overflow-hidden m-5 rounded-3xl translate-x-[5%] flex-shrink-0">
+                <div className="md:w-full w-[90%]  md:h-1/2 h-2/5  overflow-hidden m-5 rounded-3xl md:translate-x-[5%] flex-shrink-0">
                   <img
                     src="https://i.stack.imgur.com/HILmr.png"
                     alt="map-image"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="w-full h-fit flex items-center justify-end space-x-3">
+                <div className="w-full h-fit flex items-center justify-end space-x-3 md:pr-0 pr-10">
                   <p className="text-xs">
                     Lat: <span className="font-bold">-37.3159</span>
                   </p>
@@ -115,8 +120,8 @@ const UserInfo = () => {
                   </p>
                 </div>
               </div>
-              <ChatBox />
             </div>
+            <ChatBox />
           </Container>
         </div>
       )}
