@@ -36,7 +36,7 @@ const fetchUserFailed = (errorMsg: string) => {
 export const fetchUsers: any = (): Function => {
   return (dispatch: any): void => {
     dispatch(fetchingUsers());
-    fetch("https://panorbit.in/api/users.json")
+    fetch(`${import.meta.env.VITE_API}`)
       .then((res) => res.json())
       .then((res) => dispatch(gotUsers(res.users)))
       .catch((err) => {
