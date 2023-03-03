@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Users } from "@/data/user-data";
-import { fetchedUserInfo } from "@/redux/Users/actions";
+import { fetchedUserInfo, fetchUsers } from "@/redux/Users/actions";
+import UserListbg from "../UserListBg/UserListbg";
 
 interface UserInfoProps {
   id: string;
@@ -17,7 +17,7 @@ const UserInfoContainer = ({ id, name, image }: UserInfoProps) => {
       id={id}
       className="w-full min-h-20 h-[18%] flex items-center justify-start px-14 space-x-5 relative py-2 cursor-pointer"
     >
-      <div className="w-12 h-12 bg-[red] rounded-full overflow-hidden pointer-events-none">
+      <div className="w-12 h-12 rounded-full overflow-hidden pointer-events-none">
         <img
           src={image}
           alt="user-image"
@@ -31,18 +31,10 @@ const UserInfoContainer = ({ id, name, image }: UserInfoProps) => {
 };
 
 const UsersList = () => {
-  const [data, setData] = useState<any[]>([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const fetchUserData = (): void => {
-    let fetchData = Users;
-    setData(fetchData);
-  };
+  const data = useSelector((state: any) => state.userReducer.usersData);
+  const loadingState = useSelector((state: any) => state.userReducer.loading);
 
   const getUserInfo = (e: any): void => {
     let userId = e.target.id;
@@ -61,14 +53,25 @@ const UsersList = () => {
       className="w-full h-full flex flex-col items-center justify-start py-2"
       onClick={getUserInfo}
     >
-      {data?.map((user) => (
-        <UserInfoContainer
-          key={user.id}
-          name={user.name}
-          image={user.image}
-          id={user.id}
-        />
-      ))}
+      <div className="w-full h-full absolute top-0">
+        <UserListbg />
+      </div>
+      <>
+        {loadingState ? (
+          <h1>loading...</h1>
+        ) : (
+          <>
+            {data?.map((user: any) => (
+              <UserInfoContainer
+                key={user.id}
+                name={user.name}
+                image={user.profilepicture}
+                id={user.id}
+              />
+            ))}
+          </>
+        )}
+      </>
     </div>
   );
 };

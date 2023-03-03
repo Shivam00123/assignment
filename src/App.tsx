@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Gallary from "./components/Gallary";
 
@@ -6,10 +7,17 @@ import Home from "./components/Home";
 import Posts from "./components/Posts";
 import Todo from "./components/Todo";
 import UserInfo from "./components/UserInfo";
+import { fetchUsers } from "./redux/Users/actions";
 
 function App() {
-  let baseUrl = import.meta.env.VITE_URL;
-  console.log({ baseUrl });
+  const dispatch = useDispatch();
+
+  // used it here so we can fetch users in every page
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
+
   return (
     <Router>
       <Routes>

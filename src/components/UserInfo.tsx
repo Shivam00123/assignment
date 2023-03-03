@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import Container from "@/assets/Container/Container";
 import ChatBox from "@/assets/ChatBox/ChatBox";
+import { useSelector } from "react-redux";
 
 interface InfoPanelProps {
   Key: string;
@@ -26,26 +27,33 @@ const InfoPanel = ({ Key, value }: InfoPanelProps) => {
 
 const UserInfo = () => {
   const params = useParams();
-  const { fetchUserInfo } = useFetchUserInfo();
+  const { fetchUserInfo, friendsList } = useFetchUserInfo();
   const [userDetails, setUserDetails] = useState<any>({});
-  const navigate = useNavigate();
+  const data = useSelector((state: any) => state.userReducer.usersData);
+  const errorMsg = useSelector((state: any) => state.userReducer.errorMsg);
+  const loading = useSelector((state: any) => state.userReducer.loading);
 
   useMemo(() => {
-    console.log({ id: params.id });
+    // get the userId from url and fetch its info
     if (params.id) {
       let userInfo = fetchUserInfo(parseInt(params.id));
-      setUserDetails(userInfo ? userInfo : "not found");
-    } else {
-      console.log("yes");
-      navigate("/");
+      if (userInfo) {
+        setUserDetails(userInfo);
+      }
     }
-  }, [params.id]);
+  }, [data.length]);
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center p-5 md:overflow-hidden">
+    <div className="w-screen h-screen flex items-center justify-center p-5 overflow-x-hidden md:overflow-hidden">
       {userDetails === "not found" ? (
         <div className="text-4xl text-textcolor flex items-center space-x-4">
-          <h1>User not found</h1> <ImSad />
+          {loading && <h1>loading...</h1>}
+          {/* if we got any error while fetching then show the message */}
+          {errorMsg(
+            <>
+              <h1>User not found</h1> <ImSad />
+            </>
+          )}
         </div>
       ) : (
         <div className="w-full h-full relative">
@@ -57,13 +65,13 @@ const UserInfo = () => {
                 <div className="w-1/2 h-fit flex flex-col items-center justify-center translate-x-[-10%]">
                   <div className="w-40 h-40 rounded-full overflow-hidden">
                     <img
-                      src={userDetails?.image}
+                      src={userDetails?.profilepicture}
                       alt="user-profile"
                       className="w-full h-full object-contain"
                     />
                   </div>
                   <h1 className="text-xl text-textcolor font-semibold">
-                    Leanne Graham
+                    {userDetails?.name}
                   </h1>
                 </div>
 
@@ -79,14 +87,15 @@ const UserInfo = () => {
                   <InfoPanel Key="Name" value={userDetails?.company?.name} />
                   <InfoPanel
                     Key="catchPhrase"
-                    value={userDetails?.company?.catchphrase}
+                    value={userDetails?.company?.catchPhrase}
                   />
                   <InfoPanel Key="bs" value={userDetails?.company?.bs} />
                 </div>
               </div>
               <div className="h-full w-[1px] bg-textcolor mt-5 md:block hidden"></div>
               <div className="md:w-[45%] w-full h-full  flex flex-col md:items-start md:justify-start justify-center items-center">
-                <div className="w-full h-fit min-h-[30%] flex flex-col items-start px-10">
+                <div className="w-full h-fit min-h-[30%] flex flex-col md:items-start items-center md:px-10">
+                  <div className="w-4/5 h-[1px] bg-textcolor my-1 md:hidden opacity-60"></div>
                   <h1 className="text-2xl text-textcolor">Address</h1>
                   <div className="w-1/2 h-fit flex flex-col ml-10">
                     <InfoPanel
@@ -121,8 +130,8 @@ const UserInfo = () => {
                 </div>
               </div>
             </div>
-            <ChatBox />
           </Container>
+          <ChatBox friends={friendsList} />
         </div>
       )}
     </div>

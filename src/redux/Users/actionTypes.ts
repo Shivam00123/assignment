@@ -1,1 +1,7 @@
-export const FETCHED_USER = "FETCHED_USER";
+export const FETCHED_USER_INFO = "FETCHED_USER_INFO";
+
+export const FETCH_USER = "FETCH_USER";
+
+export const FETCHING_USERS = "FETCHING_USERS";
+
+export const FETCH_USER_FAILED = "FETCH_USER_FAILED";
